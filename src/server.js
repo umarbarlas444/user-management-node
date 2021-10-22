@@ -1,29 +1,19 @@
 require('dotenv').config();
+require('express-async-errors');
+
 const express =  require('express');
+const winston = require('winston');
 const app = express();
-let port = process.env.PORT || 8000;
-const db = require('./libraries/database');
-db.init();
+const port = process.env.PORT || 8000;
+console.log(process.env.NODE_ENV);
 
-//Middlewares
-app.use(express.json());
-
-const helmet = require('helmet');
-app.use(helmet());
-
-const headers = require('./middleware/header');
-app.use(headers);
-
-app.get('/', (req, res) => {
-    res.send('Welcome Home');
-});
-
-const authentication = require('./routes/authentication');
-app.use('/user/auth', authentication);
-
-const users = require('./routes/users');
-app.use('/users', users);
+//Startup Code
+require('./startup/middlewares')(app);
+require('./startup/routes')(app);
+require('./startup/db')();
+require('./startup/logging')();
 
 app.listen(port, () => {
-    console.log(`App is running at port${port}`);
+    console.log(port);
+    winston.info(`App is running at port: ${port}`);
 })

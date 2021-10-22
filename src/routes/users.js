@@ -3,9 +3,7 @@ const router = express.Router();
 const {User, validate} = require('../models/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const auth = require('../middleware/auth');
-const config = require('config');
-
+const auth = require('../middlewares/auth');
 
 router.get('/', async (req, res) => {
     const {email} = req.query;
